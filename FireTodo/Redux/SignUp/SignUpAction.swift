@@ -14,13 +14,13 @@ enum SignUpAction: Action {
     case signUpFailed(error: Error)
 
     static func signUp(with name: String, auth: Auth = .auth()) -> AppThunkAction {
-        AppThunkAction { dispatch, getState in
+        AppThunkAction{ dispatch, getState in
             if getState()?.signUpState.requesting == true {
                 return
             }
 
             dispatch(SignUpAction.signUpStarted)
-            auth.signInAnonymously { result, error in
+            auth.signInAnonymously{ result, error in
                 if let error = error {
                     dispatch(SignUpAction.signUpFailed(error: error))
                 } else if let result = result {
@@ -31,9 +31,9 @@ enum SignUpAction: Action {
     }
 
     private static func createUser(with uid: String, name: String, db: Firestore = .firestore()) -> AppThunkAction {
-        AppThunkAction { dispatch, _ in
+        AppThunkAction{ dispatch, _ in
             let user = Model.User(username: name)
-            Snapshot(data: user, path: .user(userID: uid)).create { result in
+            Snapshot(data: user, path: .user(userID: uid)).create{ result in
                 switch result {
                 case .success:
                     dispatch(AuthAction.fetchUser(uid: uid) {
